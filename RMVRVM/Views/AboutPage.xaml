@@ -48,33 +48,33 @@
             </StackLayout>
             <Label Text="Mobile App Workload Simulation" Style="{StaticResource SetupHeaderLabel}"/>
             <!--<Label Text="This page simulates mobile app workload and shows battery consumption rate" FontSize="16" Padding="10,0,0,10"/>-->
-            <Frame BackgroundColor="Bisque">
-            <StackLayout Orientation="Horizontal">
-                <Label Text="Use rMVrVM" Style="{StaticResource HeadDataStyle}" VerticalOptions="Center"/>
-                <RadioButton Content="Yes" Margin="20,0,0,0" IsChecked="{Binding UseRmvrvm, Mode=TwoWay}"/>
-                <RadioButton Content="No" Margin="20,0,0,0"/>
-            </StackLayout>
+            <Frame BackgroundColor="Bisque" Padding="8">
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Use rMVrVM" Style="{StaticResource HeadDataStyle}" VerticalOptions="Center"/>
+                    <RadioButton Content="Yes" Margin="20,0,0,0" IsChecked="{Binding UseRmvrvm, Mode=TwoWay}"/>
+                    <RadioButton Content="No" Margin="20,0,0,0"/>
+                </StackLayout>
             </Frame>
-            <Frame BackgroundColor="LightYellow">
-            <StackLayout>
-            <StackLayout Orientation="Horizontal">
-                <Label Text="Run Duration" Style="{StaticResource HeadDataStyle}"/>
-                <Label Text="{Binding Duration}" Style="{StaticResource DataStyle}"/>
-            </StackLayout>
-            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
-                <Label Text="Battery Status" Style="{StaticResource HeadDataStyle}"/>
-                <Label Text="At Start" Style="{StaticResource DataStyle}" Margin="0,0,0,0"/>
-                <Label Text="{Binding BatteryStart}" Style="{StaticResource DataStyle}"/>
-                <Label Text=", Current" Style="{StaticResource DataStyle}" Margin="0,0,0,0"/>
-                <Label Text="{Binding BatteryCurrent}" Style="{StaticResource DataStyle}"/>
-            </StackLayout>
-            <StackLayout Orientation="Horizontal">
-                <Label Text="Consumption" Style="{StaticResource HeadDataStyle}"/>
-                <Label Text="{Binding Consumption}" Style="{StaticResource DataStyle}"/>
-                <Label Text=", " Style="{StaticResource DataStyle}" Margin="-4,0,0,0"/>
-                <Label Text="{Binding Rate}" Style="{StaticResource DataStyle}" Margin="-2,0,0,0"/>
-            </StackLayout>
-            </StackLayout>
+            <Frame BackgroundColor="LightYellow" Padding="8">
+                <StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="Run Duration" Style="{StaticResource HeadDataStyle}"/>
+                        <Label Text="{Binding Duration}" Style="{StaticResource DataStyle}"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                        <Label Text="Battery Status" Style="{StaticResource HeadDataStyle}"/>
+                        <Label Text="At Start" Style="{StaticResource DataStyle}" Margin="0,0,0,0"/>
+                        <Label Text="{Binding BatteryStart}" Style="{StaticResource DataStyle}"/>
+                        <Label Text=", Current" Style="{StaticResource DataStyle}" Margin="0,0,0,0"/>
+                        <Label Text="{Binding BatteryCurrent}" Style="{StaticResource DataStyle}"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="Consumption" Style="{StaticResource HeadDataStyle}"/>
+                        <Label Text="{Binding Consumption}" Style="{StaticResource DataStyle}"/>
+                        <Label Text=", " Style="{StaticResource DataStyle}" Margin="-4,0,0,0"/>
+                        <Label Text="{Binding Rate}" Style="{StaticResource DataStyle}" Margin="-2,0,0,0"/>
+                    </StackLayout>
+                </StackLayout>
             </Frame>
             <Label Text="CPU Intesive Task Status" Style="{StaticResource HeadDataStyle}" Margin="0,10,0,0"/>
         </StackLayout>
@@ -90,16 +90,17 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <StackLayout Grid.Row="2" Orientation="Horizontal">
-        </StackLayout>
-        <StackLayout Grid.Row="3" Orientation="Horizontal">
-            <Label Text="Intesity" Style="{StaticResource DataStyle}" VerticalOptions="Center"/>
+        <StackLayout Grid.Row="2" Orientation="Horizontal" IsVisible="{Binding EnableStartButton}">
+            <Label Text="Set Workload Intesity to 1/" Style="{StaticResource DataStyle}" VerticalOptions="Center"/>
             <Entry ReturnType="Done" Keyboard="Numeric" Text="{Binding Iterations, Mode=TwoWay}"/>
-            <Button Margin="20,10,0,0" Text="Start" CornerRadius="25" HorizontalOptions="EndAndExpand"
+            <Label Text="th of MAX" Style="{StaticResource DataStyle}" VerticalOptions="Center" />
+        </StackLayout>
+        <StackLayout Grid.Row="3" Orientation="Horizontal" HorizontalOptions="Center">
+            <Button Margin="20,10,0,0" Text="Start Experiment" CornerRadius="15"
                 Command="{Binding StartCommand}"
                 BackgroundColor="{StaticResource Primary}"
                 TextColor="White" IsEnabled="{Binding EnableStartButton}" />
-            <Button Margin="10,10,0,0" Text="Stop" CornerRadius="25" HorizontalOptions="EndAndExpand"
+            <Button Margin="10,10,0,0" Text="Stop Experiment" CornerRadius="15" 
                 Command="{Binding StopCommand}"
                 BackgroundColor="{StaticResource Secondary}"
                 TextColor="White" />
