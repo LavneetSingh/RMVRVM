@@ -189,6 +189,10 @@ namespace RMVRVM.ViewModels
             Rate = "( 0.00 % per hour )";
             rateReport.Clear();
             consumptionReport.Clear();
+            if (UseRmvrvm)
+                consumptionReport.Add(new Tuple<string, string>("Mode","rMVrVM"));
+            else
+                consumptionReport.Add(new Tuple<string, string>("Mode","normal"));
             lastConsumption = 0.0;
         }
 
