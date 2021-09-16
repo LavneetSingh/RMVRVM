@@ -91,9 +91,9 @@
             </ListView.ItemTemplate>
         </ListView>
         <StackLayout Grid.Row="2" Orientation="Horizontal" IsVisible="{Binding EnableStartButton}">
-            <Label Text="Set Workload Intesity to 1/" Style="{StaticResource DataStyle}" VerticalOptions="Center"/>
+            <Label Text="Set Workload Intesity to 1/" FontSize="Small" Style="{StaticResource DataStyle}" VerticalOptions="Center"/>
             <Entry ReturnType="Done" Keyboard="Numeric" Text="{Binding Iterations, Mode=TwoWay}"/>
-            <Label Text="th of MAX" Style="{StaticResource DataStyle}" VerticalOptions="Center" />
+            <Label Text="th of MAX" Style="{StaticResource DataStyle}" FontSize="Small" VerticalOptions="Center" />
         </StackLayout>
         <StackLayout Grid.Row="3" Orientation="Horizontal" HorizontalOptions="Center">
             <Button Margin="20,10,0,0" Text="Start Experiment" CornerRadius="15"

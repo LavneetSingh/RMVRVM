@@ -13,6 +13,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 using Xamarin.Forms.PlatformConfiguration;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace RMVRVM.ViewModels
 {
@@ -57,13 +58,13 @@ namespace RMVRVM.ViewModels
         private void StopRemoteTasks()
         {
             HttpClient httpClient = new HttpClient();
-            var uri = new Uri(baseURL + stopExpURL);
+            var uri = new Uri(baseUrl + stopExpUrl);
             httpClient.GetAsync(uri);
         }
         private async Task GetRemoteTasksStatus()
         {
             HttpClient httpClient = new HttpClient();
-            var uri = new Uri(baseURL + taskStatusURL);
+            var uri = new Uri(baseUrl + taskStatusUrl);
             lock (remoteSyncObj)
             {
                 remoteTaskStatusReqPending = true;
@@ -81,50 +82,27 @@ namespace RMVRVM.ViewModels
         private void StartRemoteTasks()
         {
             HttpClient httpClient = new HttpClient();
-            var uri = new Uri(baseURL + startExpURL + Convert.ToString(Iterations));
+            var uri = new Uri(baseUrl + startExpUrl + Convert.ToString(Iterations));
             httpClient.GetAsync(uri);
         }
 
         private void SaveReport()
         {
-            //var documentsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
-            //var documentsPath = Path.Combine("/android/data/com.companyname.rmvrvm/cache/Test");
-            string documentsPath = ((App)App.Current).Downloads;
-            string localFilename = "RateReport_" + DateTime.Now.ToString(@"dd_M_hh_mm_ss") + ".txt";
-            string localPath = Path.Combine(documentsPath, localFilename);
-            StringBuilder report = new StringBuilder();
-            rateReport.ForEach(t => report.AppendLine(t.Item1 + ", " + t.Item2));
-            try
-            {
-                using (var writer = File.CreateText(localPath))
-                {
-                    writer.Write(report.ToString());
-                }
-            }
-            catch(Exception ex)
-            { }
-            localFilename = localFilename.Replace("RateReport_", "ConsumptionReport_");
-            localPath = Path.Combine(documentsPath, localFilename);
-            consumptionReport.ForEach(t => report.AppendLine(t.Item1 + ", " + t.Item2));
-            try
-            {
-                using (var writer = File.CreateText(localPath))
-                {
-                    writer.Write(report.ToString());
-                }
-            }
-            catch (Exception ex)
-            {
-
-            }
+            HttpClient httpClient = new HttpClient();
+            var uri = new Uri(baseUrl + consumptionReportUrl);
+            var content = new StringContent(JsonConvert.SerializeObject(consumptionReport), Encoding.UTF8, "application/json");
+            httpClient.PostAsync(uri, content);
         }
+
         bool remoteTaskStatusReqPending;
         object remoteSyncObj = new object();
 
-        const string stopExpURL = "stopexperiment";
-        const string taskStatusURL = "taskstatus";
-        const string startExpURL = "startexperiment?iterations=";
-        const string baseURL = "https://rmvrvmbackend20210913222459.azurewebsites.net/api/CPUIntensiveTasks/";
+        const string stopExpUrl = "stopexperiment";
+        const string taskStatusUrl = "taskstatus";
+        const string startExpUrl = "startexperiment?iterations=";
+        const string consumptionReportUrl = "uploadconsumptioneport";
+        const string rateReportUrl = "uploadratereport";
+        const string baseUrl = "https://rmvrvmbackend20210913222459.azurewebsites.net/api/CPUIntensiveTasks/";
         private readonly SortedDictionary<string, TaskStatus> taskStatusDictionary = new SortedDictionary<string, TaskStatus>(new TaskComparer());
         private readonly List<Task> tasks = new List<Task>();
         readonly object syncObj = new object();
@@ -151,7 +129,6 @@ namespace RMVRVM.ViewModels
             {
                 lastConsumption = curConsumption;
                 consumptionReport.Add(new Tuple<string, string>(Duration, curConsumption.ToString("F")));
-                SetRateReport();
             }
         }
         private void TakeLast50Tasks()

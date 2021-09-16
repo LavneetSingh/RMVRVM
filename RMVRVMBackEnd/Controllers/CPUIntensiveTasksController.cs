@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
+using System.Text;
 
 namespace RMVRVMBackEnd.Controllers
 {
@@ -67,6 +70,40 @@ namespace RMVRVMBackEnd.Controllers
         {
             TakeLast50Tasks();
             return Ok(JsonSerializer.Serialize(taskStatusVM));
+        }
+
+        [HttpPost("uploadconsumptioneport")]
+        public async Task<IActionResult> SendConsumptionReport([FromBody] object json)
+        {
+            string conn = "hidden";
+            string cont = "rmvrvm";
+            string reportFileName = "Report_" + DateTime.Now.ToString(@"dd_M_hh_mm_ss") + ".csv";
+            string s = JsonSerializer.Serialize(json);
+            var doc = JsonDocument.Parse(s);
+            var root = doc.RootElement.EnumerateArray();
+            CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(conn);
+            // Create the blob client.
+            CloudBlobClient blobClient = cloudStorageAccount.CreateCloudBlobClient();
+            // Retrieve a reference to a container.
+            CloudBlobContainer container = blobClient.GetContainerReference(cont);
+            // This also does not make a service call; it only creates a local object.
+            CloudBlockBlob blockBlob = container.GetBlockBlobReference(reportFileName);
+
+            StringBuilder data = new StringBuilder();
+            data.AppendLine("Time,Consumption");
+            while (root.MoveNext())
+            {
+                var cur = root.Current;
+                var props = cur.EnumerateObject();
+                while(props.MoveNext())
+                {
+                    data.Append(props.Current.Value + ",");
+                }
+                data.AppendLine();
+            }
+            await blockBlob.UploadTextAsync(data.ToString());
+
+            return Ok();
         }
         #endregion
 
